@@ -1,0 +1,88 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<div>
+    <a  id="download" href="@Url.Action("DownloadViewPDF", "Dashboard")">Download UrlAsPDF</a>
+    <div id="barchart" style="width: 500px; height: 300px;"></div>
+    <div id="linechart" style="width: 500px; height: 300px;"></div>
+    <script type="text/javascript">
+        google.charts.load('current', { 'packages': ['corechart', 'bar', 'line'] });
+
+        google.charts.setOnLoadCallback(function () {
+            var title = '@Model.Title';
+            var subtitle = '@Model.Subtitle';
+            var dataTable = new google.visualization.DataTable(
+                @Html.Raw(Json.Encode(Model.DataTable))
+            );
+
+            drawBarChart('barchart', title, subtitle, dataTable);
+            drawLineChart('linechart', title);
+
+        });
+
+
+        function drawBarChart(elementId, title, subtitle, dataTable) {
+            var options = {
+                chart: {
+                    title: title,
+                    subtitle: subtitle
+                }
+            };
+            
+            var chart = new google.charts.Bar(document.getElementById(elementId));
+            var image;
+
+            chart.draw(dataTable, options);
+
+        }
+
+        function drawLineChart(elementId, title) {
+            var data = google.visualization.arrayToDataTable([
+              ['Year', 'Sales', 'Expenses'],
+              ['2004', 1000, 400],
+              ['2005', 1170, 460],
+              ['2006', 660, 1120],
+              ['2007', 1030, 540]
+            ]);
+
+            var options = {
+                title: title,
+                curveType: 'function',
+                legend: { position: 'bottom' }
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById(elementId));
+            chart.draw(data, options);
+
+            var image = chart.getImageURI();
+          
+
+            $('#download').click(function () {
+                var params = {
+                    imagePath: image
+                };
+
+                $.ajax({
+                    url: "/Dashboard/DownloadViewPDF",
+                    type: "post",
+                    data: params,
+                    success: function (result) {
+                        if (result.success) {
+                            //Refresh
+                            window.location.reload();
+                        }
+                    }
+                });
+            });
+
+        }
+
+       
+
+
+    </script>
+</div>

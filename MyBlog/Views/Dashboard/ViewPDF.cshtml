@@ -1,0 +1,14 @@
+﻿@{
+    ViewBag.Title = "ViewPDF";
+    var base64 = Convert.ToBase64String(ViewBag.ImageUri);
+    var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+    
+}
+
+<h2>ViewPDF</h2>
+<div id="barchart" style="width: 500px; height: 300px;">
+    <img src="@imgSrc" />
+
+</div>
+
+

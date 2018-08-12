@@ -1,0 +1,25 @@
+﻿@model MyBlog.Post
+@{
+    ViewBag.Title = Model.Title;
+}
+
+<div>
+    <h2 style="font-weight: bold;">@Model.Title</h2>
+
+    <p>@Html.Raw(Model.Description.Replace("\r\n", "<br />"))</p>
+    <p>Posted by &mdash; ActiveLogicLabs &mdash; (@Model.User.UserName) on @Model.PostedOn.ToString()</p>
+    <p>
+        Tagged under:
+
+        @foreach (var tag in Model.PostTagMaps)
+        {
+            <span class="tag"><a href="~/home/tag/@tag.Tag.TagID">@tag.Tag.Name</a></span>
+        }
+    </p>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <span>
+            @Html.ActionLink("Edit", "Edit", new { id= @Model.PostID }, new { @class = "btn btn-default" })
+        </span>
+    }
+</div>
